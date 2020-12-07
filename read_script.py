@@ -20,7 +20,7 @@ PARAMS
     split = ['train', 'valid', 'test']
     task = ['secondary_structure', 'remote_homology', 'stability', 'fluorescence']
 """
-def read_dataset(model: str, task: str, split: str,  basepath='./data'):
+def read_dataset(model: str, task: str, split: str,  basepath='/scratch/fl1092/ml_protein_data'):
     path_to_file = f'{basepath}/{model}/{task}/{task}_{split}.p'
     data = np.load(path_to_file, allow_pickle=True)
     
