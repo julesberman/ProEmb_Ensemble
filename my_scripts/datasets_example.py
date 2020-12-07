@@ -33,7 +33,7 @@ def get_dataset(task, path, split):
 # SSD = ds.SecondaryStructureDataset(SOURCE_DATA_PATH, 'train')
 
 def rewrite_data(task):
-    for split in ['train', 'valid', 'test']:
+    for split in ['test_superfamily_holdout']:
         print(task + " " + split)
         elmo_data = read_dataset('elmo', task, split)
         dataset = get_dataset(task, './data/raw', split)
@@ -44,6 +44,7 @@ def rewrite_data(task):
         raw_dict = dict()
 
         dup_counter = 0 
+        exp_counter = 0
         dups = set()
         for index in range(len(dataset)):
 
@@ -63,32 +64,36 @@ def rewrite_data(task):
                 continue
 
             try:
-                elmo_seq = elmo_data[str(index)]
+                elmo_seq = elmo_data[id_str]
             except:
-                print("excpet on index: " + str(index))
+                print("excpet on index: " + id_str)
                 print(len(amino_acids))
+                exp_counter += 1
                 continue
 
             if(elmo_seq.shape[0] != len(amino_acids)):
-                print(str(index) + " err on " + k)
-                print(elmo_seq.shape, len(raw_seq))
+                print(str(index) + " err on " + id_str)
+                print(elmo_seq.shape, len(amino_acids))
 
             label_dict[id_str] = label
             raw_dict[id_str] = amino_acids      
             new_elmo_dict[id_str] = elmo_seq
 
         print("dups: ", dup_counter)
-        # write elmo data
-        filename = f'./data/newelmo/{task}/{task}_{split}.p'
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, "wb") as f:
-            pickle.dump(new_elmo_dict, f)
+        print("exp: ", exp_counter)
+        print(len(dataset))
+        print(len(elmo_data))
+        # # write elmo data
+        # filename = f'./data/newelmo/{task}/{task}_{split}.p'
+        # os.makedirs(os.path.dirname(filename), exist_ok=True)
+        # with open(filename, "wb") as f:
+        #     pickle.dump(new_elmo_dict, f)
 
-        # write raw data
-        filename = f'./data/newraw/{task}/{task}_{split}.p'
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        with open(filename, "wb") as f:
-            pickle.dump(raw_dict, f)
+        # # write raw data
+        # filename = f'./data/newraw/{task}/{task}_{split}.p'
+        # os.makedirs(os.path.dirname(filename), exist_ok=True)
+        # with open(filename, "wb") as f:
+        #     pickle.dump(raw_dict, f)
 
         # write label data
         filename = f'./data/label/{task}/{task}_{split}.p'
@@ -146,8 +151,6 @@ def sanity_check(task, model):
         print("key errs ", key_errs)
 
 
-task = 'stability'
+task = 'remote_homology'
 
-# rewrite_data(task)
-sanity_check(task, 'unirep')
-sanity_check(task, 'newelmo')
+rewrite_data(task)

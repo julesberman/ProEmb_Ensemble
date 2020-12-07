@@ -33,7 +33,6 @@ pass labels too to ensure X and y are alinged
 avgr is a function which applies a transform across the embedding
 """
 def dict_2_arr(data_dict, labels, avgr=lambda x: np.mean(x, axis=0)):
-    print("transforming data...")
     
     emb_shape = list(data_dict.values())[0].shape
     number_of_embeddings = len(data_dict) 
@@ -42,7 +41,14 @@ def dict_2_arr(data_dict, labels, avgr=lambda x: np.mean(x, axis=0)):
     y = np.zeros(number_of_embeddings)
     
     i = 0
-    for key in data_dict:
+
+    # iter over sorted keys in labels to ensure proteins
+    # from different models are indexed the same
+    keys = list(labels.keys())
+    keys.sort()
+    for key in keys :
+        if key == 'd1smyc_':
+            continue
         X[i] = avgr(data_dict[key])
         y[i] = labels[key]
         i += 1
