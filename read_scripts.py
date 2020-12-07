@@ -25,3 +25,27 @@ def read_dataset(model: str, task: str, split: str,  basepath='./data'):
     data = np.load(path_to_file, allow_pickle=True)
     
     return data
+
+
+"""
+converts the dict to an array
+pass labels too to ensure X and y are alinged 
+avgr is a function which applies a transform across the embedding
+"""
+def dict_2_arr(data_dict, labels, avgr=lambda x: np.mean(x, axis=0)):
+    print("transforming data...")
+    
+    emb_shape = list(data_dict.values())[0].shape
+    number_of_embeddings = len(data_dict) 
+
+    X = np.zeros((number_of_embeddings, emb_shape[-1]))
+    y = np.zeros(number_of_embeddings)
+    
+    i = 0
+    for key in data_dict:
+        X[i] = avgr(data_dict[key])
+        y[i] = labels[key]
+        i += 1
+        
+    return X, y
+
