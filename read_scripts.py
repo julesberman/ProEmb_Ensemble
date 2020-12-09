@@ -35,7 +35,7 @@ avgr is a function which applies a transform across the embedding
 def dict_2_arr(data_dict, labels, avgr=lambda x: np.mean(x, axis=0)):
     
     emb_shape = list(data_dict.values())[0].shape
-    number_of_embeddings = len(data_dict) 
+    number_of_embeddings = len(labels) 
 
     X = np.zeros((number_of_embeddings, emb_shape[-1]))
     y = np.zeros(number_of_embeddings)
